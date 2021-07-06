@@ -9,15 +9,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import string
 import os
-
 import PIL
 
 # Import file
-os.chdir('C:/Users/jiasi/Desktop/Course Materials/AA500/TIPS Project')
+os.chdir('C:/Users/jiasi/Desktop/Course Materials/AA500/TIPS Project') # Change it to your own working directory before running
 dic = pd.read_excel(r'TIPS.xlsx', sheet_name=None)
 
-# Make a list of all comments and remove NA's in excel
 
+# Make a list of all comments and remove NA's in excel
 years = list(dic.keys())
 
 comm_raw = []
@@ -32,8 +31,8 @@ comm_val = [x for x in comm_raw if pd.isnull(x) == False]
 print("We have the following years' comments")
 print(years)
 
-# Separate each year's comments
 
+# Separate each year's comments
 comm_raw_2021 = [] ## Year 2021
 vallist = dic['2021'].values.tolist()
 for j in vallist:
@@ -70,14 +69,13 @@ for j in vallist:
     comm_raw_2016.extend(j)
 comm_val_2016 = [x for x in comm_raw_2016 if pd.isnull(x) == False]
 
-# Headcount
 
+# Headcount
 print("There are", len(comm_val), "valid comments in total.")
 for i in years:
     print("In year", i, "there are" ,len(globals()['comm_val_%s' % i]) ,"valid comments.")
     
-## Define datacloud function 
-# Break comments into tokens to create a nested list
+
 
 # Make a list of stop words which are not meaningful (like "WHICH")
 stop_words = nltk.corpus.stopwords.words('english')
@@ -94,6 +92,7 @@ def make_cloud(k, m, s, f): # where k is the input validated comments set
     
     global stop_words
     
+    # Break comments into tokens to create a nested list
     tkn = [] 
     for i in k:
         x = nltk.word_tokenize(i)
@@ -107,7 +106,7 @@ def make_cloud(k, m, s, f): # where k is the input validated comments set
                 temp_list.append(j)
         tkn_fil.append(temp_list)
     
-    
+    # Word stemming
     stem = PorterStemmer()
 
     tkn_stem = []
@@ -117,6 +116,7 @@ def make_cloud(k, m, s, f): # where k is the input validated comments set
             temp_list.append(stem.stem(j))
         tkn_stem.append(temp_list)
     
+    # Word lemmatization
     lem = WordNetLemmatizer()
 
     tkn_lem = []
@@ -125,18 +125,21 @@ def make_cloud(k, m, s, f): # where k is the input validated comments set
         for j in i:
             temp_list.append(lem.lemmatize(j, "v"))
         tkn_lem.append(temp_list)
-        
+    
+    # Create string vectors
     str_cloud =''
     for i in tkn_lem:
         for j in i:
             str_cloud = str_cloud + ' ' + j.lower()
-
+    
+    # Make word clouds
     stop_words_cloud = list(STOPWORDS) + \
                         ["n\'t"] + \
                             list(string.ascii_lowercase) + \
                             ["non", "re", "ing", "de", "ed", \
-                             "go", "make", "ll"]
+                             "go", "make", "ll"] # Some prefix and suffix which are not our interests
     
+    # Read image prototypes
     mask = np.array(PIL.Image.open(m))
     
     wordcloud = WordCloud(
@@ -155,7 +158,8 @@ def make_cloud(k, m, s, f): # where k is the input validated comments set
     plt.savefig(f, format = "png")
     plt.show()
 
-# Make word clouds
+    
+# Run function and generate word clouds
 path = "question.png"
 filename = "2016_cloud.png"
 make_cloud(comm_val_2016, path, 70, filename)
@@ -183,7 +187,3 @@ make_cloud(comm_val_2021, path, 70, filename)
 path = "NCSU.png"
 filename = "total_cloud.png"
 make_cloud(comm_val, path, 70, filename)
-
-
-
-
