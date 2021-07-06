@@ -1,3 +1,4 @@
+# Packages and imports
 import nltk
 
 nltk.download('punkt')
@@ -10,6 +11,7 @@ import matplotlib.pyplot as plt
 import string
 import os
 import PIL
+
 
 # Import file
 os.chdir('C:/Users/jiasi/Desktop/Course Materials/AA500/TIPS Project') # Change it to your own working directory before running
